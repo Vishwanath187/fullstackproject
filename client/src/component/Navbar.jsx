@@ -1,49 +1,74 @@
-import React from 'react';
-import logo from "../assets/logo.jpeg";
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-    return (
-        <div className="w-full h-16 flex items-center justify-between bg-gray-200 shadow px-5">
+  const location = useLocation();
+  const navigate = useNavigate();
 
-            {/* Left: Logo + Title */}
-            <div className="flex items-center gap-3 whitespace-nowrap">
-                <img
-                    src={logo}
-                    alt="Logo"
-                    className="h-12 w-auto"
-                />
-                <h1 className="text-2xl font-semibold text-gray-800">
-                    Digital Library
-                </h1>
-            </div>
+  // ✅ Treat these as PUBLIC pages
+  const publicRoutes = ["/", "/about", "/contact"];
+  const isPublicPage = publicRoutes.includes(location.pathname);
 
-            {/* Right: Menu */}
-            <div className="flex items-center gap-4">
-                <Link
-                    to="/"
-                    className="px-4 py-1 border border-gray-400 rounded-md bg-white text-gray-800 font-medium hover:bg-gray-100"
-                >
-                    Home
-                </Link>
+  const handleLogout = () => {
+    localStorage.removeItem("isAdminLoggedIn");
+    navigate("/", { replace: true });
+  };
 
-                <Link
-                    to="/about"
-                    className="px-4 py-1 border border-gray-400 rounded-md bg-white text-gray-800 font-medium hover:bg-gray-100"
-                >
-                    About
-                </Link>
+  return (
+    <div className="w-full h-14 bg-black text-white flex justify-between items-center px-6">
+      {/* LEFT */}
+      <h1 className="text-xl font-bold tracking-wide">
+        Digital Library
+      </h1>
 
-                <Link
-                    to="/contact"
-                    className="px-4 py-1 border border-gray-400 rounded-md bg-white text-gray-800 font-medium hover:bg-gray-100"
-                >
-                    Contact
-                </Link>
-            </div>
+      {/* RIGHT */}
+      <div className="flex gap-6 text-sm font-medium items-center">
+        {isPublicPage ? (
+          <>
+            <Link to="/" className="hover:text-gray-300">
+              Home
+            </Link>
 
-        </div>
-    );
+            <Link to="/about" className="hover:text-gray-300">
+              About
+            </Link>
+
+            <Link to="/contact" className="hover:text-gray-300">
+              Contact
+            </Link>
+
+            <Link
+              to="/login"
+              className="border border-white px-4 py-1 rounded hover:bg-white hover:text-black transition"
+            >
+              Admin
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link to="/home" className="hover:text-gray-300">
+              Books
+            </Link>
+
+            <Link to="/student" className="hover:text-gray-300">
+              Students
+            </Link>
+
+            <Link to="/borrow-history" className="hover:text-gray-300">
+              Transactions
+            </Link>
+
+
+            <button
+              onClick={handleLogout}
+              className="border border-white px-3 py-1 rounded hover:bg-red-600 transition"
+            >
+              Logout
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default Navbar;
